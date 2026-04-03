@@ -1,0 +1,78 @@
+{
+  "name": "Celeste: Pro Customer Success & Sourcing Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollInterval": 1,
+        "downloadAttachments": true,
+        "options": {
+          "customFilter": "UNSEEN"
+        }
+      },
+      "id": "imap-trigger",
+      "name": "IMAP Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "You are Celeste, the Customer Success Lead for Organic Lume. Your voice is professional, minimalist, and luxury-focused.\n\nBrand Context:\n- Product: 22 momme 6A Mulberry Silk Heatless Hair Curler Sets.\n- Brand Colors: Sage, Cream, Beige.\n- Core Values: Sustainable luxury, effortless beauty, high-performance hair care.\n\nInstructions:\n1. If the email is from a VENDOR: Inquire about bulk pricing (target $2-$3.50) for 22 momme 6A silk.\n2. If the email is from a CUSTOMER: Be warm and helpful, sign off with 'Organic Glow'.\n3. Create a DRAFT of the response in Gmail. Do not send it yet."
+        }
+      },
+      "id": "celeste-ai",
+      "name": "Celeste AI Brain",
+      "type": "n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "messageId": "={{ $node[\"IMAP Email Trigger\"].json[\"messageId\"] }}",
+        "text": "={{ $json.output }}"
+      },
+      "id": "gmail-draft",
+      "name": "Create Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "IMAP Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "Celeste AI Brain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Celeste AI Brain": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

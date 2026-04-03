@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local infrastructure (separate repos)
+n8n-deploy/
+paperclip/
+web/

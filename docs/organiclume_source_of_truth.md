@@ -50,14 +50,13 @@
 ---
 
 ### Paperclip AI (Agent Orchestration)
-- *Status:* **LIVE IN CLOUD**
-- *Dashboard:* [https://organiclume-ecommerce-production.up.railway.app/LUM/dashboard](https://organiclume-ecommerce-production.up.railway.app/LUM/dashboard)
-- *API Base URL:* `https://organiclume-ecommerce-production.up.railway.app`
-- *Railway Project:* `paperclip-lume` — [https://railway.com/project/1151751b-ce6b-4c5d-b318-b8da8e8d7cfa](https://railway.com/project/1151751b-ce6b-4c5d-b318-b8da8e8d7cfa)
+- *Status:* **LOCAL**
+- *Dashboard:* `http://localhost:3101/LUM/dashboard`
+- *API Base URL:* `http://localhost:3101`
 - *Repository (fork):* `https://github.com/qualitymaterial/paperclip`
 - *Company:* LUM (Organic Lume) — Company ID: `0aa61dda-d563-4cf4-a608-f04979b729c8`
 - *Admin Account:* `hello@organiclume.com` (instance admin)
-- *Remote Access:* Full API access via board API key — Claude can connect, read/update issues, post comments, and interact with agents from any session
+- *Agent Execution:* Local via Claude Code — agents run heartbeats on the local machine
 
 #### Active Agent Team (LUM Company)
 | Agent | Role | Responsibility |
@@ -105,7 +104,7 @@
 2. [ ] **Sourcing:** Receive vendor response, negotiate pricing, request samples
 3. [ ] **Quality Assurance:** Receive bulk samples, verify material and custom box quality
 4. [x] **Cloud Migration:** n8n live on Railway (`n8n-production-309d6.up.railway.app`)
-5. [x] **Cloud Migration:** Paperclip AI live on Railway (`organiclume-ecommerce-production.up.railway.app`)
+5. [x] **Local Setup:** Paperclip AI running locally (`localhost:3101`)
 6. [ ] **Automation:** Verify Celeste n8n workflow is creating Gmail drafts correctly
 7. [ ] **Ecommerce:** Resolve LUM-2 — finalize e-commerce platform stack decision
 8. [ ] **Ecommerce:** Resolve LUM-8 — provision Shopify stores once vendor/sourcing confirmed

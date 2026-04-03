@@ -30,11 +30,11 @@ const CELESTE_WORKFLOW_ID = "nbO4TfIC7jaBRUst";
 
 const PAPERCLIP_URL = process.env.PAPERCLIP_URL || "http://localhost:3101";
 const PAPERCLIP_API_KEY = process.env.PAPERCLIP_API_KEY || "";
-const COMPANY_ID = process.env.PAPERCLIP_COMPANY_ID || "0aa61dda-d563-4cf4-a608-f04979b729c8";
+const COMPANY_ID = process.env.PAPERCLIP_COMPANY_ID || "cf0e4ffc-6ec9-42c3-a660-10e2ea086b57";
 
-// Agent IDs
-const CELESTE_AGENT_ID = "fa0a699b-4e56-486c-ac89-40f6d684dd02";
-const OPS_MANAGER_AGENT_ID = "5be47319-aa3b-438d-a7f9-567f754e2379";
+// Agent IDs (local LUME instance)
+const CELESTE_AGENT_ID = "054a9e59-bb3c-422f-aa4b-e0848890d24e";
+const OPS_MANAGER_AGENT_ID = "3ceb213c-ad94-4d99-ab79-ded16a870025";
 
 // Known vendor domains/emails for routing
 const VENDOR_PATTERNS = [
@@ -196,7 +196,7 @@ async function main() {
   // Filter to only new executions (newer than cursor)
   const newExecs = cursor.lastExecutionId
     ? executions.filter((e) => Number(e.id) > Number(cursor.lastExecutionId))
-    : executions;
+    : [...executions];
 
   if (!newExecs.length) {
     console.log("No new executions since last sync.");

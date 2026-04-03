@@ -27,3 +27,6 @@ dist-ssr
 n8n-deploy/
 paperclip/
 web/
+
+# Sync cursor (local state)
+scripts/.n8n-sync-cursor.json

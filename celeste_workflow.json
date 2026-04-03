@@ -1,78 +1,370 @@
 {
-  "name": "Celeste: Pro Customer Success & Sourcing Agent",
-  "nodes": [
-    {
-      "parameters": {
-        "pollInterval": 1,
-        "downloadAttachments": true,
-        "options": {
-          "customFilter": "UNSEEN"
+    "updatedAt": "2026-04-03T19:56:30.852Z",
+    "createdAt": "2026-04-03T14:12:27.940Z",
+    "id": "nbO4TfIC7jaBRUst",
+    "name": "Celeste: Pro Customer Success & Sourcing Agent",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "postProcessAction": "=read",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.emailReadImap",
+            "typeVersion": 2.1,
+            "position": [
+                0,
+                48
+            ],
+            "id": "c12167d9-37ba-4a1f-873b-3f80536a07e7",
+            "name": "Email Trigger (IMAP)",
+            "credentials": {
+                "imap": {
+                    "id": "cTibKnjQIoJhuk7t",
+                    "name": "IMAP account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.text || $json.html || \"(no email body)\" }}",
+                "options": {
+                    "systemMessage": "You are Celeste, the Customer Success Lead for Organic Lume. Your voice is professional, minimalist, and luxury-focused.\n\nBrand Context:\n- Product: 22 momme 6A Mulberry Silk Heatless Hair Curler Sets (100% 6A Grade Mulberry Silk).\n- Brand Colors: Sage, Cream, Beige.\n- Core Values: Sustainable luxury, effortless beauty, high-performance hair care.\n- Target COGS: $2-$3.50 per unit. Material: OEKO-TEX certified, 22 momme 6A Mulberry silk.\n\nInstructions:\n1. If the email is from a VENDOR or manufacturer: Inquire about bulk pricing for 22 momme 6A silk heatless curler sets. Ask about MOQ, samples, lead times, and OEKO-TEX certification.\n2. If the email is from a CUSTOMER: Be warm and helpful. Answer questions about the product. Sign off with \"Warm regards, Celeste | Organic Lume\".\n3. If the email is a system notification or spam: Reply with just the word SKIP.\n4. Keep responses concise and professional."
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                208,
+                48
+            ],
+            "id": "e44949f3-4fc2-4359-9c08-a7c3aca73852",
+            "name": "AI Agent"
+        },
+        {
+            "parameters": {
+                "model": {
+                    "__rl": true,
+                    "value": "claude-sonnet-4-5-20250514",
+                    "mode": "id"
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+            "typeVersion": 1.3,
+            "position": [
+                80,
+                256
+            ],
+            "id": "8e344279-9515-4d7f-8cd7-38683749e959",
+            "name": "Anthropic Chat Model",
+            "credentials": {
+                "anthropicApi": {
+                    "id": "RC2rnh1rY6E6YCzH",
+                    "name": "Anthropic account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ $node[\"Email Trigger (IMAP)\"].json.messageId || $executionId }}",
+                "contextWindowLength": 5
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.3,
+            "position": [
+                224,
+                256
+            ],
+            "id": "0801bbb0-b005-458a-a003-c8300e7ca065",
+            "name": "Simple Memory"
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "subject": "=Re: {{ $node[\"Email Trigger (IMAP)\"].json.subject }}",
+                "message": "={{ $json.output }}",
+                "options": {
+                    "threadId": "={{ $node[\"Email Trigger (IMAP)\"].json.messageId }}"
+                }
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                560,
+                48
+            ],
+            "id": "640c53a1-099e-4d86-8048-8b16778cdfc0",
+            "name": "Create a draft",
+            "webhookId": "112ea351-fcf3-437d-aa7a-78c28e4e8145",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "HiDTJyLLRqE12f1h",
+                    "name": "Gmail account"
+                }
+            }
         }
-      },
-      "id": "imap-trigger",
-      "name": "IMAP Email Trigger",
-      "type": "n8n-nodes-base.emailReadImap",
-      "typeVersion": 2,
-      "position": [
-        400,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.text }}",
-        "options": {
-          "systemMessage": "You are Celeste, the Customer Success Lead for Organic Lume. Your voice is professional, minimalist, and luxury-focused.\n\nBrand Context:\n- Product: 22 momme 6A Mulberry Silk Heatless Hair Curler Sets.\n- Brand Colors: Sage, Cream, Beige.\n- Core Values: Sustainable luxury, effortless beauty, high-performance hair care.\n\nInstructions:\n1. If the email is from a VENDOR: Inquire about bulk pricing (target $2-$3.50) for 22 momme 6A silk.\n2. If the email is from a CUSTOMER: Be warm and helpful, sign off with 'Organic Glow'.\n3. Create a DRAFT of the response in Gmail. Do not send it yet."
+    ],
+    "connections": {
+        "Email Trigger (IMAP)": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Anthropic Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Simple Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Create a draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
         }
-      },
-      "id": "celeste-ai",
-      "name": "Celeste AI Brain",
-      "type": "n8n-nodes-langchain.agent",
-      "typeVersion": 1.7,
-      "position": [
-        650,
-        300
-      ]
     },
-    {
-      "parameters": {
-        "resource": "draft",
-        "messageId": "={{ $node[\"IMAP Email Trigger\"].json[\"messageId\"] }}",
-        "text": "={{ $json.output }}"
-      },
-      "id": "gmail-draft",
-      "name": "Create Gmail Draft",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        900,
-        300
-      ]
-    }
-  ],
-  "connections": {
-    "IMAP Email Trigger": {
-      "main": [
-        [
-          {
-            "node": "Celeste AI Brain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "settings": {
+        "executionOrder": "v1",
+        "binaryMode": "separate",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": false
     },
-    "Celeste AI Brain": {
-      "main": [
-        [
-          {
-            "node": "Create Gmail Draft",
-            "type": "main",
-            "index": 0
-          }
+    "staticData": null,
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "1f0a9446-62e9-4543-b67d-02c2dedb5493",
+    "activeVersionId": "1f0a9446-62e9-4543-b67d-02c2dedb5493",
+    "versionCounter": 55,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2026-04-03T14:12:27.943Z",
+            "createdAt": "2026-04-03T14:12:27.943Z",
+            "role": "workflow:owner",
+            "workflowId": "nbO4TfIC7jaBRUst",
+            "projectId": "4gtiJ65FP36SW5Ud",
+            "project": {
+                "updatedAt": "2026-04-03T14:10:50.899Z",
+                "createdAt": "2026-04-03T14:09:51.765Z",
+                "id": "4gtiJ65FP36SW5Ud",
+                "name": "Brian Anderson <brian.anderson1784@me.com>",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "bc748c14-0f36-4c06-9570-805fd83e8447"
+            }
+        }
+    ],
+    "tags": [],
+    "activeVersion": {
+        "updatedAt": "2026-04-03T19:56:30.853Z",
+        "createdAt": "2026-04-03T19:56:30.853Z",
+        "versionId": "1f0a9446-62e9-4543-b67d-02c2dedb5493",
+        "workflowId": "nbO4TfIC7jaBRUst",
+        "nodes": [
+            {
+                "parameters": {
+                    "postProcessAction": "=read",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.emailReadImap",
+                "typeVersion": 2.1,
+                "position": [
+                    0,
+                    48
+                ],
+                "id": "c12167d9-37ba-4a1f-873b-3f80536a07e7",
+                "name": "Email Trigger (IMAP)",
+                "credentials": {
+                    "imap": {
+                        "id": "cTibKnjQIoJhuk7t",
+                        "name": "IMAP account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.text || $json.html || \"(no email body)\" }}",
+                    "options": {
+                        "systemMessage": "You are Celeste, the Customer Success Lead for Organic Lume. Your voice is professional, minimalist, and luxury-focused.\n\nBrand Context:\n- Product: 22 momme 6A Mulberry Silk Heatless Hair Curler Sets (100% 6A Grade Mulberry Silk).\n- Brand Colors: Sage, Cream, Beige.\n- Core Values: Sustainable luxury, effortless beauty, high-performance hair care.\n- Target COGS: $2-$3.50 per unit. Material: OEKO-TEX certified, 22 momme 6A Mulberry silk.\n\nInstructions:\n1. If the email is from a VENDOR or manufacturer: Inquire about bulk pricing for 22 momme 6A silk heatless curler sets. Ask about MOQ, samples, lead times, and OEKO-TEX certification.\n2. If the email is from a CUSTOMER: Be warm and helpful. Answer questions about the product. Sign off with \"Warm regards, Celeste | Organic Lume\".\n3. If the email is a system notification or spam: Reply with just the word SKIP.\n4. Keep responses concise and professional."
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    208,
+                    48
+                ],
+                "id": "e44949f3-4fc2-4359-9c08-a7c3aca73852",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "claude-sonnet-4-5-20250514",
+                        "mode": "id"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    80,
+                    256
+                ],
+                "id": "8e344279-9515-4d7f-8cd7-38683749e959",
+                "name": "Anthropic Chat Model",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "RC2rnh1rY6E6YCzH",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "sessionIdType": "customKey",
+                    "sessionKey": "={{ $node[\"Email Trigger (IMAP)\"].json.messageId || $executionId }}",
+                    "contextWindowLength": 5
+                },
+                "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+                "typeVersion": 1.3,
+                "position": [
+                    224,
+                    256
+                ],
+                "id": "0801bbb0-b005-458a-a003-c8300e7ca065",
+                "name": "Simple Memory"
+            },
+            {
+                "parameters": {
+                    "resource": "draft",
+                    "subject": "=Re: {{ $node[\"Email Trigger (IMAP)\"].json.subject }}",
+                    "message": "={{ $json.output }}",
+                    "options": {
+                        "threadId": "={{ $node[\"Email Trigger (IMAP)\"].json.messageId }}"
+                    }
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    560,
+                    48
+                ],
+                "id": "640c53a1-099e-4d86-8048-8b16778cdfc0",
+                "name": "Create a draft",
+                "webhookId": "112ea351-fcf3-437d-aa7a-78c28e4e8145",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "HiDTJyLLRqE12f1h",
+                        "name": "Gmail account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "Email Trigger (IMAP)": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Simple Memory": {
+                "ai_memory": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_memory",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent": {
+                "main": [
+                    [
+                        {
+                            "node": "Create a draft",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "Brian Anderson",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2026-04-03T19:56:31.806Z",
+                "id": 3,
+                "workflowId": "nbO4TfIC7jaBRUst",
+                "versionId": "1f0a9446-62e9-4543-b67d-02c2dedb5493",
+                "event": "activated",
+                "userId": "bc748c14-0f36-4c06-9570-805fd83e8447"
+            },
+            {
+                "createdAt": "2026-04-03T19:56:31.038Z",
+                "id": 2,
+                "workflowId": "nbO4TfIC7jaBRUst",
+                "versionId": "1f0a9446-62e9-4543-b67d-02c2dedb5493",
+                "event": "deactivated",
+                "userId": "bc748c14-0f36-4c06-9570-805fd83e8447"
+            }
         ]
-      ]
     }
-  }
 }

@@ -24,6 +24,11 @@
   - *Stack:* Vite + React + Vanilla CSS + Framer Motion
   - *Repository:* `https://github.com/qualitymaterial/organiclume-ecommerce`
   - *Hosting:* Vercel (auto-deploys on `main` branch push)
+- **Shopify (E-commerce):**
+  - *Dev Store:* `lume-8787.myshopify.com`
+  - *Account:* `hello@organiclume.com` (Shopify Partner)
+  - *Shopify CLI:* Installed (v3.93.0), authenticated locally
+  - *Status:* Dev store created, theme selection in progress
 - **Sales / Checkout:**
   - *Processor:* Stripe (Checkout Button logic integrated in Hero component)
 
@@ -124,6 +129,6 @@
 4. [x] **Cloud Migration:** n8n live on Railway (`n8n-production-309d6.up.railway.app`)
 5. [x] **Local Setup:** Paperclip AI running locally (`localhost:3101`)
 6. [x] **Automation:** Celeste n8n workflow verified — Gmail API polling + Claude Haiku + draft creation working (April 4, 2026)
-7. [ ] **Ecommerce:** Resolve LUM-2 — finalize e-commerce platform stack decision
-8. [ ] **Ecommerce:** Resolve LUM-8 — provision Shopify stores once vendor/sourcing confirmed
+7. [x] **Ecommerce:** LUM-2 resolved — Shopify standard selected (April 4, 2026)
+8. [x] **Ecommerce:** LUM-8 unblocked — dev store live at `lume-8787.myshopify.com` (April 4, 2026)
 9. [ ] **Scale:** Launch Pinterest campaign using CMO Agent generated assets

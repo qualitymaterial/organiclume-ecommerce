@@ -30,3 +30,4 @@ web/
 
 # Sync cursor (local state)
 scripts/.n8n-sync-cursor.json
+scripts/.vendor-sync-cursor.json

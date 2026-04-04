@@ -4,6 +4,8 @@ import product from './assets/product.png';
 import lifestyle1 from '/marketing/lifestyle_1.png';
 import lifestyle2 from '/marketing/lifestyle_2.png';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { WaitlistForm } from './WaitlistForm';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -30,7 +32,7 @@ function App() {
   return (
     <div className="lume-app">
       {/* Header / Nav */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -38,6 +40,9 @@ function App() {
       >
         <div className="container">
           <img src={logo} alt="LUME Logo" style={{ width: '120px', marginBottom: '1rem' }} />
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+            <Link to="/blog" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Journal</Link>
+          </nav>
         </div>
       </motion.header>
 
@@ -57,18 +62,11 @@ function App() {
             <motion.p variants={fadeInUp} style={{ margin: '1.5rem 0 2rem' }}>
               Get salon-quality curls while you sleep. No heat, no damage, just effortless style.
             </motion.p>
-            <motion.div variants={fadeInUp} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <motion.a 
-                href="#buy" 
-                className="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Get My LUME Set
-              </motion.a>
-              <span style={{ fontSize: '0.875rem', color: '#8a9681', fontWeight: 500 }}>
-                Join 5,000+ happy women
-              </span>
+            <motion.div variants={fadeInUp}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--accent-sage)', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                Launching soon — be first in line
+              </p>
+              <WaitlistForm />
             </motion.div>
           </motion.div>
           <motion.div 
@@ -251,6 +249,9 @@ function App() {
       {/* Footer */}
       <footer style={{ padding: '4rem 0', borderTop: '1px solid #ddd' }}>
         <div className="container">
+          <p style={{ fontSize: '0.875rem', marginBottom: '1rem' }}>
+            <Link to="/blog" style={{ color: 'var(--accent-sage)', textDecoration: 'none', fontWeight: 500 }}>Journal</Link>
+          </p>
           <p style={{ fontSize: '0.875rem' }}>&copy; 2026 LUME Wellness. Minimalist Luxury for your Hair.</p>
         </div>
       </footer>

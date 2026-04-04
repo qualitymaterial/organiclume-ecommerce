@@ -72,15 +72,7 @@ export function BlogList() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '3rem',
-                  alignItems: 'center',
-                  backgroundColor: 'var(--bg-secondary)',
-                  borderRadius: '24px',
-                  overflow: 'hidden',
-                }}
+                className="blog-featured"
               >
                 <div style={{ overflow: 'hidden', aspectRatio: '4/3' }}>
                   <motion.img
@@ -91,7 +83,7 @@ export function BlogList() {
                     transition={{ duration: 0.5 }}
                   />
                 </div>
-                <div style={{ padding: '3rem 3rem 3rem 0' }}>
+                <div className="blog-featured-content" style={{ padding: '3rem 3rem 3rem 0' }}>
                   <p style={{ fontSize: '0.75rem', color: 'var(--accent-sage)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>
                     Featured
                   </p>
@@ -156,16 +148,6 @@ export function BlogList() {
         </div>
       </footer>
 
-      <style>{`
-        @media (max-width: 768px) {
-          article[style*="grid-template-columns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-          }
-          article[style*="grid-template-columns: 1fr 1fr"] > div:last-child {
-            padding: 1.5rem !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

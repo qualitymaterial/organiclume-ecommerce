@@ -23,19 +23,13 @@ function getTimeLeft() {
 
 function TimerUnit({ value, label }: { value: number; label: string }) {
   return (
-    <div style={{ textAlign: 'center', minWidth: '72px' }}>
+    <div style={{ textAlign: 'center', minWidth: '3.5rem' }}>
       <motion.div
         key={value}
         initial={{ opacity: 0.4, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        style={{
-          fontSize: '3rem',
-          fontFamily: 'var(--font-serif)',
-          fontWeight: 500,
-          color: 'var(--text-primary)',
-          lineHeight: 1,
-        }}
+        className="timer-digit"
       >
         {String(value).padStart(2, '0')}
       </motion.div>

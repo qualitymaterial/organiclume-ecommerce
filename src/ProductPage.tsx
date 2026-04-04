@@ -89,15 +89,7 @@ export function ProductPage() {
 
       {/* Hero */}
       <section className="section" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
-        <div
-          className="container"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '5rem',
-            alignItems: 'center',
-          }}
-        >
+        <div className="container hero-grid product-hero-grid">
           {/* Product image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94, rotate: -1 }}
@@ -184,7 +176,7 @@ export function ProductPage() {
           <motion.p variants={fadeInUp} style={{ maxWidth: '520px', margin: '0 auto 3.5rem', color: 'var(--text-secondary)' }}>
             Everything your hair needs. Nothing it doesn't.
           </motion.p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+          <div className="grid-3col">
             {[
               {
                 icon: '🌿',
@@ -316,7 +308,7 @@ export function ProductPage() {
             Real results from real people — before we even launched.
           </motion.p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem' }}>
+          <div className="grid-3col">
             {TESTIMONIALS.map((t) => (
               <motion.div
                 key={t.name}
@@ -417,12 +409,6 @@ export function ProductPage() {
         </div>
       </footer>
 
-      <style>{`
-        @media (max-width: 768px) {
-          section .container { grid-template-columns: 1fr !important; gap: 2rem !important; }
-          h1 { font-size: 2.25rem !important; }
-        }
-      `}</style>
     </div>
   );
 }

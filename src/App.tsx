@@ -48,7 +48,7 @@ function App() {
 
       {/* Hero Section */}
       <section className="section" style={{ paddingTop: '2rem' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+        <div className="container hero-grid">
           <motion.div 
             className="hero-content" 
             style={{ textAlign: 'left' }}
@@ -91,7 +91,7 @@ function App() {
       >
         <div className="container">
           <motion.h2 variants={fadeInUp} style={{ marginBottom: '4rem' }}>Your morning routine shouldn't start with a burn.</motion.h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2rem' }}>
+          <div className="grid-3col">
             <motion.div className="benefit-card" variants={fadeInUp}>
               <h3>100% Damage-Free</h3>
               <p>Made with premium mulberry silk to prevent frizz and breakage.</p>
@@ -184,7 +184,7 @@ function App() {
         variants={fadeInUp}
       >
         <div className="container">
-          <div className="feature-grid" style={{ gridTemplateColumns: 'minmax(400px, 1fr) 1fr', textAlign: 'left', alignItems: 'center' }}>
+          <div className="sustainability-grid">
             <motion.div 
               style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}
               whileHover={{ scale: 1.02 }}
@@ -256,13 +256,6 @@ function App() {
         </div>
       </footer>
 
-      {/* Simple responsive adjustments for demo */}
-      <style>{`
-        @media (max-width: 768px) {
-          section .container { grid-template-columns: 1fr !important; gap: 2rem !important; }
-          h1 { font-size: 2.5rem; }
-        }
-      `}</style>
     </div>
   );
 }

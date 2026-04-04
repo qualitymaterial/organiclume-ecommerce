@@ -32,6 +32,12 @@ body {
   min-width: 320px;
   min-height: 100vh;
   display: block;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 h1, h2, h3 {
@@ -61,6 +67,7 @@ p {
     padding: 6rem 5%;
     text-align: center;
 }
+/* (duplicate .section rule below consolidates to 8rem; kept for specificity order) */
 
 .container {
     max-width: 1200px;
@@ -137,7 +144,7 @@ p {
 }
 
 .section {
-  padding: 8rem 0;
+  padding: 8rem 5%;
 }
 
 /* Blog prose styles */
@@ -197,10 +204,139 @@ p {
   margin: 3rem 0;
 }
 
-/* Responsive utilities */
+/* ── Responsive Layout Utilities ── */
+
+/* Hero: 2-col on desktop, stacks on mobile */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.product-hero-grid {
+  gap: 5rem;
+}
+
+/* Generic 3-column grid */
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+/* Sustainability section: asymmetric 2-col */
+.sustainability-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 1fr;
+  gap: 3rem;
+  text-align: left;
+  align-items: center;
+}
+
+/* Blog featured post: 2-col card */
+.blog-featured {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+/* Countdown timer digit */
+.timer-digit {
+  font-size: 3rem;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* Waitlist form email+button row */
+.waitlist-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ── Breakpoints ── */
+
 @media (max-width: 768px) {
-  h1 { font-size: 2.5rem; }
-  h2 { font-size: 2rem; }
-  .section { padding: 4rem 0; }
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.75rem; }
+  .section { padding: 4rem 5%; }
   .blog-body { font-size: 1rem; }
+
+  /* All layout grids stack */
+  .hero-grid,
+  .product-hero-grid,
+  .grid-3col,
+  .sustainability-grid,
+  .blog-featured {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Gallery stacks */
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  /* Remove left padding on sustainability text when stacked */
+  .sustainability-grid > *:last-child {
+    padding-left: 0 !important;
+  }
+
+  /* Benefit card tighter padding */
+  .benefit-card {
+    padding: 1.75rem;
+  }
+
+  /* Countdown digits shrink on mobile */
+  .timer-digit {
+    font-size: 2rem;
+  }
+
+  /* Waitlist form stacks email above button */
+  .waitlist-row {
+    flex-direction: column;
+  }
+  .waitlist-row input[type="email"] {
+    flex: none;
+    width: 100%;
+  }
+  .waitlist-row .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Blog featured post content padding */
+  .blog-featured-content {
+    padding: 1.5rem !important;
+  }
+
+  /* Blog post article */
+  article h1 {
+    font-size: 1.875rem !important;
+  }
+
+  /* Inputs full width on mobile */
+  input[type="email"],
+  input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Ensure container horizontal padding on mobile */
+  .container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (max-width: 390px) {
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.5rem; }
+  .timer-digit { font-size: 1.75rem; }
 }

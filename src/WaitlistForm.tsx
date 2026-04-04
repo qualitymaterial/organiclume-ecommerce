@@ -106,7 +106,7 @@ export function WaitlistForm() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: '420px' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: '420px', width: '100%' }}
         >
           <input
             type="text"
@@ -115,7 +115,7 @@ export function WaitlistForm() {
             onChange={(e) => setFirstName(e.target.value)}
             style={inputStyle}
           />
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div className="waitlist-row">
             <input
               type="email"
               placeholder="Your email address"

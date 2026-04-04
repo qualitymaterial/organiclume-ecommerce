@@ -40,8 +40,10 @@ function App() {
       >
         <div className="container">
           <img src={logo} alt="LUME Logo" style={{ width: '120px', marginBottom: '1rem' }} />
-          <nav style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             <Link to="/blog" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Journal</Link>
+            <Link to="/about" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', textTransform: 'uppercase' }}>About</Link>
+            <Link to="/faq" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', textTransform: 'uppercase' }}>FAQ</Link>
           </nav>
         </div>
       </motion.header>
@@ -247,10 +249,14 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: '4rem 0', borderTop: '1px solid #ddd' }}>
+      <footer style={{ padding: '4rem 0', borderTop: '1px solid #ddd', textAlign: 'center' }}>
         <div className="container">
-          <p style={{ fontSize: '0.875rem', marginBottom: '1rem' }}>
-            <Link to="/blog" style={{ color: 'var(--accent-sage)', textDecoration: 'none', fontWeight: 500 }}>Journal</Link>
+          <p style={{ fontSize: '0.875rem', marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+            <Link to="/blog" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Journal</Link>
+            <Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link>
+            <Link to="/faq" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>FAQ</Link>
+            <Link to="/terms" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Terms</Link>
+            <Link to="/privacy" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Privacy</Link>
           </p>
           <p style={{ fontSize: '0.875rem' }}>&copy; 2026 LUME Wellness. Minimalist Luxury for your Hair.</p>
         </div>

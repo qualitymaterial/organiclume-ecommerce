@@ -340,3 +340,45 @@ p {
   h2 { font-size: 1.5rem; }
   .timer-digit { font-size: 1.75rem; }
 }
+
+/* ── Legal pages (Terms, Privacy) ── */
+.legal-body {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.legal-body h2 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 2.5rem 0 0.75rem;
+}
+
+.legal-body h3 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.legal-body p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.legal-body ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.legal-body li {
+  margin-bottom: 0.4rem;
+}
+
+/* ── About page body ── */
+.about-body p {
+  font-size: 1.0625rem;
+  color: var(--text-secondary);
+}

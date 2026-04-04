@@ -1,0 +1,223 @@
+{
+    "updatedAt": "2026-04-04T18:56:02.833Z",
+    "createdAt": "2026-04-04T18:56:02.833Z",
+    "id": "tEeUnmULY5DbM0oq",
+    "name": "Outbound Email Drafts (Paperclip \u2192 Gmail)",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "draft-email",
+                "options": {
+                    "responseMode": "lastNode"
+                }
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 2,
+            "position": [
+                0,
+                0
+            ],
+            "id": "webhook-draft",
+            "name": "Webhook",
+            "webhookId": "draft-email-hook"
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "toList": "={{ $json.body.to }}",
+                "subject": "={{ $json.body.subject }}",
+                "message": "={{ $json.body.body }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                220,
+                0
+            ],
+            "id": "gmail-draft",
+            "name": "Create Gmail Draft",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "NS1cAa8FAa6ydxcs",
+                    "name": "Gmail account"
+                }
+            },
+            "webhookId": "f4bd7f60-fc1a-46fc-a169-b94c70328216"
+        },
+        {
+            "parameters": {
+                "jsCode": "const input = $input.first().json;\nreturn [{\n  json: {\n    success: true,\n    draftId: input.id || 'unknown',\n    threadId: input.threadId || null,\n    to: $node[\"Webhook\"].json.body.to,\n    subject: $node[\"Webhook\"].json.body.subject,\n    message: \"Gmail draft created. Review and send from hello@organiclume.com\"\n  }\n}];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                440,
+                0
+            ],
+            "id": "response-format",
+            "name": "Format Response"
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Create Gmail Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create Gmail Draft": {
+            "main": [
+                [
+                    {
+                        "node": "Format Response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": null,
+    "pinData": null,
+    "versionId": "85163ada-2792-4972-920b-f0ca098dbdec",
+    "activeVersionId": "85163ada-2792-4972-920b-f0ca098dbdec",
+    "versionCounter": 3,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2026-04-04T18:56:02.833Z",
+            "createdAt": "2026-04-04T18:56:02.833Z",
+            "role": "workflow:owner",
+            "workflowId": "tEeUnmULY5DbM0oq",
+            "projectId": "3mT3MaaTLyH5saqF",
+            "project": {
+                "updatedAt": "2026-04-04T16:14:54.865Z",
+                "createdAt": "2026-04-04T16:08:00.093Z",
+                "id": "3mT3MaaTLyH5saqF",
+                "name": "Brian Anderson <hello@organiclume.com>",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        }
+    ],
+    "tags": [],
+    "activeVersion": {
+        "updatedAt": "2026-04-04T18:56:02.870Z",
+        "createdAt": "2026-04-04T18:56:02.870Z",
+        "versionId": "85163ada-2792-4972-920b-f0ca098dbdec",
+        "workflowId": "tEeUnmULY5DbM0oq",
+        "nodes": [
+            {
+                "parameters": {
+                    "httpMethod": "POST",
+                    "path": "draft-email",
+                    "options": {
+                        "responseMode": "lastNode"
+                    }
+                },
+                "type": "n8n-nodes-base.webhook",
+                "typeVersion": 2,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "webhook-draft",
+                "name": "Webhook",
+                "webhookId": "draft-email-hook"
+            },
+            {
+                "parameters": {
+                    "resource": "draft",
+                    "toList": "={{ $json.body.to }}",
+                    "subject": "={{ $json.body.subject }}",
+                    "message": "={{ $json.body.body }}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    220,
+                    0
+                ],
+                "id": "gmail-draft",
+                "name": "Create Gmail Draft",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "NS1cAa8FAa6ydxcs",
+                        "name": "Gmail account"
+                    }
+                },
+                "webhookId": "f4bd7f60-fc1a-46fc-a169-b94c70328216"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const input = $input.first().json;\nreturn [{\n  json: {\n    success: true,\n    draftId: input.id || 'unknown',\n    threadId: input.threadId || null,\n    to: $node[\"Webhook\"].json.body.to,\n    subject: $node[\"Webhook\"].json.body.subject,\n    message: \"Gmail draft created. Review and send from hello@organiclume.com\"\n  }\n}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    440,
+                    0
+                ],
+                "id": "response-format",
+                "name": "Format Response"
+            }
+        ],
+        "connections": {
+            "Webhook": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Gmail Draft",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Gmail Draft": {
+                "main": [
+                    [
+                        {
+                            "node": "Format Response",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "Brian Anderson",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2026-04-04T18:56:55.157Z",
+                "id": 10,
+                "workflowId": "tEeUnmULY5DbM0oq",
+                "versionId": "85163ada-2792-4972-920b-f0ca098dbdec",
+                "event": "activated",
+                "userId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        ]
+    }
+}

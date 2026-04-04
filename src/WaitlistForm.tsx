@@ -4,39 +4,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
-const KLAVIYO_COMPANY_ID = import.meta.env.VITE_KLAVIYO_COMPANY_ID as string;
-const KLAVIYO_LIST_ID = import.meta.env.VITE_KLAVIYO_LIST_ID as string;
+const WAITLIST_WEBHOOK = 'https://n8n-production-309d6.up.railway.app/webhook/waitlist-signup';
 
-async function subscribeToKlaviyo(email: string, firstName: string): Promise<void> {
-  const payload = {
-    data: {
-      type: 'subscription',
-      attributes: {
-        list_id: KLAVIYO_LIST_ID,
-        email,
-        custom_source: 'LUME Waitlist',
-        ...(firstName.trim() && {
-          properties: { $first_name: firstName.trim() },
-        }),
-      },
-    },
-  };
+async function subscribeToWaitlist(email: string, firstName: string): Promise<void> {
+  const res = await fetch(WAITLIST_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email.trim(),
+      firstName: firstName.trim(),
+      source: 'website_waitlist',
+      signupDate: new Date().toISOString(),
+    }),
+  });
 
-  const res = await fetch(
-    `https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_COMPANY_ID}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        revision: '2024-02-15',
-      },
-      body: JSON.stringify(payload),
-    }
-  );
-
-  // Klaviyo returns 202 Accepted on success
-  if (!res.ok && res.status !== 202) {
-    throw new Error(`Klaviyo error: ${res.status}`);
+  if (!res.ok) {
+    throw new Error(`Signup error: ${res.status}`);
   }
 }
 
@@ -54,7 +37,7 @@ export function WaitlistForm() {
     setErrorMsg('');
 
     try {
-      await subscribeToKlaviyo(email.trim(), firstName);
+      await subscribeToWaitlist(email.trim(), firstName);
       setFormState('success');
     } catch (err) {
       console.error(err);

@@ -64,7 +64,11 @@
 ### n8n (Automation Engine)
 - *Status:* **LIVE**
 - *Host:* Railway.app — [https://n8n-production-309d6.up.railway.app](https://n8n-production-309d6.up.railway.app)
-- *Workflow Files:* `celeste_workflow.json`, `outbound_email_workflow.json` (in repo root)
+- *Workflow Files (in repo root):*
+  - `celeste_workflow.json` — inbound email processing
+  - `outbound_email_workflow.json` — Paperclip → Gmail drafts
+  - `vendor_router_workflow.json` — vendor response detection + alerts
+  - `daily_digest_workflow.json` — morning business briefing
 
 #### Workflow 1: Celeste Customer Success & Sourcing Agent
 | Step | Node | Function |
@@ -92,6 +96,25 @@ curl -X POST https://n8n-production-309d6.up.railway.app/webhook/draft-email \
   -H "Content-Type: application/json" \
   -d '{"to": "vendor@example.com", "subject": "RFQ", "body": "Email body..."}'
 ```
+
+#### Workflow 3: Vendor Response Router
+| Step | Node | Function |
+|------|------|----------|
+| 1 | Schedule Trigger | Fires every 5 minutes |
+| 2 | Get Unread Emails | Gmail API — fetches unread emails |
+| 3 | Detect Vendor | Code node — checks sender against known vendor domains (163.com, fstexsilk.com, stitchsilk.com, taihusnow.com, alibaba.com) |
+| 4 | Is Vendor? | If node — routes vendor emails vs non-vendor |
+| 5 | Alert Draft | Creates a "VENDOR RESPONSE" alert draft with email preview |
+
+**Monitored vendor domains:** `163.com`, `alibaba.com`, `fstexsilk.com`, `stitchsilk.com`, `taihusnow.com`, `globalsources.com`, `made-in-china.com`
+
+#### Workflow 4: Daily Business Digest
+| Step | Node | Function |
+|------|------|----------|
+| 1 | Schedule Trigger | Fires daily at 8:00 AM |
+| 2 | Get Inbox Summary | Gmail API — counts unread emails |
+| 3 | Build Digest | Code node — compiles morning briefing with inbox count, action items, priorities |
+| 4 | Create Digest Draft | Saves digest as Gmail draft for review |
 
 **GCP OAuth Setup:**
 - *GCP Project ID:* `119990042010`

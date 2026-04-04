@@ -1,0 +1,393 @@
+{
+    "updatedAt": "2026-04-04T19:06:07.955Z",
+    "createdAt": "2026-04-04T19:06:07.955Z",
+    "id": "k3rgfPUGRAuDhuw7",
+    "name": "Vendor Response Router",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 5
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "schedule-vendor",
+            "name": "Every 5 Minutes"
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "returnAll": false,
+                "limit": 10,
+                "filters": {
+                    "readStatus": "unread",
+                    "receivedAfter": "={{ $now.minus(10, 'minutes').toISO() }}"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                0,
+                0
+            ],
+            "id": "gmail-vendor-check",
+            "name": "Get Unread Emails",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "NS1cAa8FAa6ydxcs",
+                    "name": "Gmail account"
+                }
+            },
+            "webhookId": "4ef13085-e5da-424a-9a03-ece43d3b4a75"
+        },
+        {
+            "parameters": {
+                "jsCode": "const from = $input.first().json.from || '';\nconst subject = $input.first().json.subject || '';\nconst body = ($input.first().json.text || $input.first().json.snippet || '(no body)').substring(0, 2000);\nconst messageId = $input.first().json.id || '';\n\n// Vendor detection\nconst vendorDomains = ['163.com', 'alibaba.com', 'aliexpress.com', 'fstexsilk.com', 'stitchsilk.com', 'taihusnow.com', 'globalsources.com', 'made-in-china.com'];\nconst isVendor = vendorDomains.some(d => from.toLowerCase().includes(d));\n\nif (!isVendor) {\n  return [{ json: { skip: true, reason: 'Not a vendor email' } }];\n}\n\n// Create Paperclip issue via API\nconst paperclipUrl = 'http://localhost:3101'; // won't work from cloud - use webhook instead\nconst companyId = 'cf0e4ffc-6ec9-42c3-a660-10e2ea086b57';\nconst supplyChainAnalystId = '95edddb7-bb54-46c3-86b0-ad9b70076d4d';\nconst opsManagerId = '3ceb213c-ad94-4d99-ab79-ded16a870025';\n\nreturn [{\n  json: {\n    isVendor: true,\n    from,\n    subject,\n    body: body.substring(0, 500),\n    messageId,\n    assigneeAgentId: supplyChainAnalystId,\n    notifyAgentId: opsManagerId\n  }\n}];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                220,
+                0
+            ],
+            "id": "vendor-detect",
+            "name": "Detect Vendor"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "loose"
+                    },
+                    "conditions": [
+                        {
+                            "id": "is-vendor",
+                            "leftValue": "={{ $json.isVendor }}",
+                            "rightValue": true,
+                            "operator": {
+                                "type": "boolean",
+                                "operation": "true"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                440,
+                0
+            ],
+            "id": "vendor-filter",
+            "name": "Is Vendor?"
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "subject": "=VENDOR RESPONSE: {{ $json.subject }}",
+                "message": "=A vendor has replied to our RFQ.\n\nFrom: {{ $json.from }}\nSubject: {{ $json.subject }}\n\nPreview:\n{{ $json.body }}\n\n---\nThis is an automated alert from Celeste. Check the full email in hello@organiclume.com and update the Paperclip board.",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                660,
+                -50
+            ],
+            "id": "vendor-alert-draft",
+            "name": "Alert Draft",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "NS1cAa8FAa6ydxcs",
+                    "name": "Gmail account"
+                }
+            },
+            "webhookId": "76b19aa4-88ac-49e2-baa6-98343faf22a6"
+        }
+    ],
+    "connections": {
+        "Every 5 Minutes": {
+            "main": [
+                [
+                    {
+                        "node": "Get Unread Emails",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Unread Emails": {
+            "main": [
+                [
+                    {
+                        "node": "Detect Vendor",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Detect Vendor": {
+            "main": [
+                [
+                    {
+                        "node": "Is Vendor?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Vendor?": {
+            "main": [
+                [
+                    {
+                        "node": "Alert Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                []
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": false
+    },
+    "staticData": {
+        "node:Every 5 Minutes": {
+            "recurrenceRules": []
+        }
+    },
+    "meta": null,
+    "pinData": null,
+    "versionId": "e613d164-c0f4-4d18-9986-89ef55fc3821",
+    "activeVersionId": "e613d164-c0f4-4d18-9986-89ef55fc3821",
+    "versionCounter": 4,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2026-04-04T19:06:07.955Z",
+            "createdAt": "2026-04-04T19:06:07.955Z",
+            "role": "workflow:owner",
+            "workflowId": "k3rgfPUGRAuDhuw7",
+            "projectId": "3mT3MaaTLyH5saqF",
+            "project": {
+                "updatedAt": "2026-04-04T16:14:54.865Z",
+                "createdAt": "2026-04-04T16:08:00.093Z",
+                "id": "3mT3MaaTLyH5saqF",
+                "name": "Brian Anderson <hello@organiclume.com>",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        }
+    ],
+    "tags": [],
+    "activeVersion": {
+        "updatedAt": "2026-04-04T19:06:08.015Z",
+        "createdAt": "2026-04-04T19:06:08.015Z",
+        "versionId": "e613d164-c0f4-4d18-9986-89ef55fc3821",
+        "workflowId": "k3rgfPUGRAuDhuw7",
+        "nodes": [
+            {
+                "parameters": {
+                    "rule": {
+                        "interval": [
+                            {
+                                "field": "minutes",
+                                "minutesInterval": 5
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.scheduleTrigger",
+                "typeVersion": 1.2,
+                "position": [
+                    -200,
+                    0
+                ],
+                "id": "schedule-vendor",
+                "name": "Every 5 Minutes"
+            },
+            {
+                "parameters": {
+                    "operation": "getAll",
+                    "returnAll": false,
+                    "limit": 10,
+                    "filters": {
+                        "readStatus": "unread",
+                        "receivedAfter": "={{ $now.minus(10, 'minutes').toISO() }}"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "gmail-vendor-check",
+                "name": "Get Unread Emails",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "NS1cAa8FAa6ydxcs",
+                        "name": "Gmail account"
+                    }
+                },
+                "webhookId": "4ef13085-e5da-424a-9a03-ece43d3b4a75"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const from = $input.first().json.from || '';\nconst subject = $input.first().json.subject || '';\nconst body = ($input.first().json.text || $input.first().json.snippet || '(no body)').substring(0, 2000);\nconst messageId = $input.first().json.id || '';\n\n// Vendor detection\nconst vendorDomains = ['163.com', 'alibaba.com', 'aliexpress.com', 'fstexsilk.com', 'stitchsilk.com', 'taihusnow.com', 'globalsources.com', 'made-in-china.com'];\nconst isVendor = vendorDomains.some(d => from.toLowerCase().includes(d));\n\nif (!isVendor) {\n  return [{ json: { skip: true, reason: 'Not a vendor email' } }];\n}\n\n// Create Paperclip issue via API\nconst paperclipUrl = 'http://localhost:3101'; // won't work from cloud - use webhook instead\nconst companyId = 'cf0e4ffc-6ec9-42c3-a660-10e2ea086b57';\nconst supplyChainAnalystId = '95edddb7-bb54-46c3-86b0-ad9b70076d4d';\nconst opsManagerId = '3ceb213c-ad94-4d99-ab79-ded16a870025';\n\nreturn [{\n  json: {\n    isVendor: true,\n    from,\n    subject,\n    body: body.substring(0, 500),\n    messageId,\n    assigneeAgentId: supplyChainAnalystId,\n    notifyAgentId: opsManagerId\n  }\n}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    220,
+                    0
+                ],
+                "id": "vendor-detect",
+                "name": "Detect Vendor"
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "loose"
+                        },
+                        "conditions": [
+                            {
+                                "id": "is-vendor",
+                                "leftValue": "={{ $json.isVendor }}",
+                                "rightValue": true,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "true"
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.2,
+                "position": [
+                    440,
+                    0
+                ],
+                "id": "vendor-filter",
+                "name": "Is Vendor?"
+            },
+            {
+                "parameters": {
+                    "resource": "draft",
+                    "subject": "=VENDOR RESPONSE: {{ $json.subject }}",
+                    "message": "=A vendor has replied to our RFQ.\n\nFrom: {{ $json.from }}\nSubject: {{ $json.subject }}\n\nPreview:\n{{ $json.body }}\n\n---\nThis is an automated alert from Celeste. Check the full email in hello@organiclume.com and update the Paperclip board.",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    660,
+                    -50
+                ],
+                "id": "vendor-alert-draft",
+                "name": "Alert Draft",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "NS1cAa8FAa6ydxcs",
+                        "name": "Gmail account"
+                    }
+                },
+                "webhookId": "76b19aa4-88ac-49e2-baa6-98343faf22a6"
+            }
+        ],
+        "connections": {
+            "Every 5 Minutes": {
+                "main": [
+                    [
+                        {
+                            "node": "Get Unread Emails",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get Unread Emails": {
+                "main": [
+                    [
+                        {
+                            "node": "Detect Vendor",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Detect Vendor": {
+                "main": [
+                    [
+                        {
+                            "node": "Is Vendor?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Is Vendor?": {
+                "main": [
+                    [
+                        {
+                            "node": "Alert Draft",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    []
+                ]
+            }
+        },
+        "authors": "Brian Anderson",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2026-04-04T19:06:20.928Z",
+                "id": 11,
+                "workflowId": "k3rgfPUGRAuDhuw7",
+                "versionId": "e613d164-c0f4-4d18-9986-89ef55fc3821",
+                "event": "activated",
+                "userId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        ]
+    }
+}

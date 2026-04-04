@@ -1,0 +1,303 @@
+{
+    "updatedAt": "2026-04-04T19:06:08.201Z",
+    "createdAt": "2026-04-04T19:06:08.201Z",
+    "id": "u2QQR0N6vRvNIRn3",
+    "name": "Daily Business Digest",
+    "description": null,
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "0 8 * * *"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "daily-trigger",
+            "name": "Every Day 8am"
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "returnAll": false,
+                "limit": 20,
+                "filters": {
+                    "readStatus": "unread"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                0,
+                0
+            ],
+            "id": "gmail-inbox-summary",
+            "name": "Get Inbox Summary",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "NS1cAa8FAa6ydxcs",
+                    "name": "Gmail account"
+                }
+            },
+            "webhookId": "e61b785c-ff49-4380-a93b-fbc18c8bab3b"
+        },
+        {
+            "parameters": {
+                "jsCode": "const now = new Date();\nconst dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });\n\n// Get Gmail unread count\nlet unreadCount = 0;\nlet unreadSubjects = [];\ntry {\n  const gmailData = $node[\"Get Inbox Summary\"].json;\n  if (Array.isArray($node[\"Get Inbox Summary\"].json)) {\n    unreadCount = $node[\"Get Inbox Summary\"].json.length || 0;\n  } else {\n    unreadCount = 1;\n  }\n} catch(e) {\n  unreadCount = 0;\n}\n\n// Build digest\nconst digest = `\n# \u2600\ufe0f Organic Lume Daily Digest\n**${dateStr}**\n\n---\n\n## \ud83d\udcec Inbox\n- **${unreadCount}** unread emails in hello@organiclume.com\n\n## \ud83d\udccb Quick Actions\n- Review any vendor RFQ responses\n- Check Paperclip board for agent updates: http://localhost:3101/LUM/dashboard\n- Review and send any Gmail drafts from Celeste\n\n## \ud83c\udfaf Active Priorities\n1. Vendor RFQ responses (FSTex, Stitchtex, Taihu Snow) \u2014 check inbox\n2. Shopify theme selection and customization\n3. Social accounts setup (Pinterest, TikTok, Instagram)\n4. Product line expansion sourcing\n\n---\n*Automated by Celeste | Organic Lume*\n`;\n\nreturn [{ json: { digest, subject: `\u2600\ufe0f Organic Lume Digest \u2014 ${dateStr}` } }];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                220,
+                0
+            ],
+            "id": "build-digest",
+            "name": "Build Digest"
+        },
+        {
+            "parameters": {
+                "resource": "draft",
+                "subject": "={{ $json.subject }}",
+                "message": "={{ $json.digest }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.2,
+            "position": [
+                440,
+                0
+            ],
+            "id": "digest-draft",
+            "name": "Create Digest Draft",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "NS1cAa8FAa6ydxcs",
+                    "name": "Gmail account"
+                }
+            },
+            "webhookId": "cead107a-0d57-4a6a-b208-d12f6b7462e4"
+        }
+    ],
+    "connections": {
+        "Every Day 8am": {
+            "main": [
+                [
+                    {
+                        "node": "Get Inbox Summary",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Inbox Summary": {
+            "main": [
+                [
+                    {
+                        "node": "Build Digest",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Build Digest": {
+            "main": [
+                [
+                    {
+                        "node": "Create Digest Draft",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "availableInMCP": false
+    },
+    "staticData": {
+        "node:Every Day 8am": {
+            "recurrenceRules": []
+        }
+    },
+    "meta": null,
+    "pinData": null,
+    "versionId": "8b098b06-4147-4cbd-a200-dfb82347d825",
+    "activeVersionId": "8b098b06-4147-4cbd-a200-dfb82347d825",
+    "versionCounter": 4,
+    "triggerCount": 1,
+    "shared": [
+        {
+            "updatedAt": "2026-04-04T19:06:08.201Z",
+            "createdAt": "2026-04-04T19:06:08.201Z",
+            "role": "workflow:owner",
+            "workflowId": "u2QQR0N6vRvNIRn3",
+            "projectId": "3mT3MaaTLyH5saqF",
+            "project": {
+                "updatedAt": "2026-04-04T16:14:54.865Z",
+                "createdAt": "2026-04-04T16:08:00.093Z",
+                "id": "3mT3MaaTLyH5saqF",
+                "name": "Brian Anderson <hello@organiclume.com>",
+                "type": "personal",
+                "icon": null,
+                "description": null,
+                "creatorId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        }
+    ],
+    "tags": [],
+    "activeVersion": {
+        "updatedAt": "2026-04-04T19:06:08.245Z",
+        "createdAt": "2026-04-04T19:06:08.245Z",
+        "versionId": "8b098b06-4147-4cbd-a200-dfb82347d825",
+        "workflowId": "u2QQR0N6vRvNIRn3",
+        "nodes": [
+            {
+                "parameters": {
+                    "rule": {
+                        "interval": [
+                            {
+                                "field": "cronExpression",
+                                "expression": "0 8 * * *"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.scheduleTrigger",
+                "typeVersion": 1.2,
+                "position": [
+                    -200,
+                    0
+                ],
+                "id": "daily-trigger",
+                "name": "Every Day 8am"
+            },
+            {
+                "parameters": {
+                    "operation": "getAll",
+                    "returnAll": false,
+                    "limit": 20,
+                    "filters": {
+                        "readStatus": "unread"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "gmail-inbox-summary",
+                "name": "Get Inbox Summary",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "NS1cAa8FAa6ydxcs",
+                        "name": "Gmail account"
+                    }
+                },
+                "webhookId": "e61b785c-ff49-4380-a93b-fbc18c8bab3b"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const now = new Date();\nconst dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });\n\n// Get Gmail unread count\nlet unreadCount = 0;\nlet unreadSubjects = [];\ntry {\n  const gmailData = $node[\"Get Inbox Summary\"].json;\n  if (Array.isArray($node[\"Get Inbox Summary\"].json)) {\n    unreadCount = $node[\"Get Inbox Summary\"].json.length || 0;\n  } else {\n    unreadCount = 1;\n  }\n} catch(e) {\n  unreadCount = 0;\n}\n\n// Build digest\nconst digest = `\n# \u2600\ufe0f Organic Lume Daily Digest\n**${dateStr}**\n\n---\n\n## \ud83d\udcec Inbox\n- **${unreadCount}** unread emails in hello@organiclume.com\n\n## \ud83d\udccb Quick Actions\n- Review any vendor RFQ responses\n- Check Paperclip board for agent updates: http://localhost:3101/LUM/dashboard\n- Review and send any Gmail drafts from Celeste\n\n## \ud83c\udfaf Active Priorities\n1. Vendor RFQ responses (FSTex, Stitchtex, Taihu Snow) \u2014 check inbox\n2. Shopify theme selection and customization\n3. Social accounts setup (Pinterest, TikTok, Instagram)\n4. Product line expansion sourcing\n\n---\n*Automated by Celeste | Organic Lume*\n`;\n\nreturn [{ json: { digest, subject: `\u2600\ufe0f Organic Lume Digest \u2014 ${dateStr}` } }];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    220,
+                    0
+                ],
+                "id": "build-digest",
+                "name": "Build Digest"
+            },
+            {
+                "parameters": {
+                    "resource": "draft",
+                    "subject": "={{ $json.subject }}",
+                    "message": "={{ $json.digest }}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.gmail",
+                "typeVersion": 2.2,
+                "position": [
+                    440,
+                    0
+                ],
+                "id": "digest-draft",
+                "name": "Create Digest Draft",
+                "credentials": {
+                    "gmailOAuth2": {
+                        "id": "NS1cAa8FAa6ydxcs",
+                        "name": "Gmail account"
+                    }
+                },
+                "webhookId": "cead107a-0d57-4a6a-b208-d12f6b7462e4"
+            }
+        ],
+        "connections": {
+            "Every Day 8am": {
+                "main": [
+                    [
+                        {
+                            "node": "Get Inbox Summary",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get Inbox Summary": {
+                "main": [
+                    [
+                        {
+                            "node": "Build Digest",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Build Digest": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Digest Draft",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "authors": "Brian Anderson",
+        "name": null,
+        "description": null,
+        "autosaved": false,
+        "workflowPublishHistory": [
+            {
+                "createdAt": "2026-04-04T19:06:21.209Z",
+                "id": 12,
+                "workflowId": "u2QQR0N6vRvNIRn3",
+                "versionId": "8b098b06-4147-4cbd-a200-dfb82347d825",
+                "event": "activated",
+                "userId": "ad3517bb-ca4c-433d-b637-e48564118fd1"
+            }
+        ]
+    }
+}

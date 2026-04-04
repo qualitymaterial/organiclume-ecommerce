@@ -188,7 +188,7 @@ curl -X POST https://n8n-production-309d6.up.railway.app/webhook/draft-email \
 | **Stitchtex (Suzhou Shengze)** | Jiangsu, China | RFQ drafted — ready to send | Vertically integrated, TÜV Rheinland verified |
 | **Taihu Snow Silk** | China | RFQ drafted — ready to send | OEKO-TEX, established brand |
 
-- *Email for all:* `zibodaranfang@163.com`, `info@fstexsilk.com`, `info@stitchsilk.com`, `sales@taihusnow.com`
+- *Email for all:* `zibodaranfang@163.com`, `info@fstexsilk.com`, `18815533743@163.com` (Stitchtex), `carol@taihusnow.com` (Taihu Snow)
 - *Material Requirements:* OEKO-TEX certified, 22 momme 6A Mulberry silk
 - *Packaging Supplier:* PackMojo (recommended for magnetic closure gift boxes, $5-12/unit)
 

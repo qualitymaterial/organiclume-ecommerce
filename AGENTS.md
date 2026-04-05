@@ -1,5 +1,7 @@
 # Organic Lume — Project Context
 
+> **SYNC RULE:** This file is mirrored across `CLAUDE.md`, `GEMINI.md`, `.cursorrules`, and `AGENTS.md`. All four files MUST contain identical content. When updating any of these files, you MUST update all four simultaneously. Never edit one without the others.
+
 ## What This Is
 Organic Lume is a premium silk hair care brand (organiclume.com) selling 22 momme 6A Mulberry Silk heatless curler sets and accessories. Pre-launch phase — product sourced, site live, AI team operational.
 
